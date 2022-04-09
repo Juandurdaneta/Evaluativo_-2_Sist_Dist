@@ -1,6 +1,7 @@
 const bookSchema = require('./models');
 const Book = bookSchema.getBook();
 
+// add new book
 exports.addBook = function(book, res){
     const newBook = new Book({
         ...book
@@ -25,7 +26,7 @@ exports.addBook = function(book, res){
 
 
 }
-
+// get specific book
 exports.getBook = function(id, res){
     Book.findOne({bookId: id}, (err, foundBook) => {
 
@@ -46,10 +47,54 @@ exports.getBook = function(id, res){
     })
 }
 
-exports.updateBook = function(id, res){
+// get all books
 
+exports.getBooks = function(res) {
+
+    Book.find({}, (err, foundBooks) => {
+        if(!err){
+            res.send({
+                status: 200,
+                foundBooks: foundBooks
+            })
+        } else {
+            res.send({
+                status: 404,
+                message: "Specified book was not found..."
+            })
+        }
+    })
+}   
+// update book
+exports.updateBook = function(id, data, res){
+    Book.findOneAndUpdate({bookId: id}, data, (err, foundBook) => {
+        if(!err && foundBook){
+            res.send({
+                status: 200,
+                message: "Book updated successfully!"
+            })
+        } else {
+            res.send({
+                status: 400,
+                message: "Failed to update book, please try again..."
+            })
+        }
+    })
 }
 
+// delete book
 exports.deleteBook = function(id, res){
-    
+    Book.findOneAndDelete({bookId: id}, (err, deletedBook) =>{
+        if(!err){
+            res.send({
+                status: 200,
+                message: "Book removed successfully!"
+            })
+        } else {
+            res.send({
+                status: 400,
+                message: "Failed to delete book, please try again..."
+            })
+        }
+    })
 }
