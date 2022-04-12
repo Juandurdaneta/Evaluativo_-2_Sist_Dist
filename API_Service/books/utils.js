@@ -1,8 +1,11 @@
 const bookSchema = require('./models');
 const Book = bookSchema.getBook();
 
+require('dotenv').config();
+
 // add new book
 exports.addBook = function(book, res){
+    
     const newBook = new Book({
         ...book
     });
@@ -97,4 +100,16 @@ exports.deleteBook = function(id, res){
             })
         }
     })
+}
+
+// check if user is administrator
+exports.checkAdmin = function(token){
+    const user = jwt.verify(token, process.env.SECRET_KEY);
+
+    if(user.isAdministrator){
+        return true
+    } else {
+        return false
+    }
+
 }

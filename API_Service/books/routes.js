@@ -11,7 +11,20 @@ const utils = require('./utils');
 router.post('/', (req, res) =>{
     const bookData = req.body;
 
-    bookData && utils.addBook(bookData, res);
+    try{
+        const token = req.headers.authorization.split(" ")[1];
+
+        utils.checkAdmin(token) ? utils.addBook(bookData, res) : res.send({status: 401, message: "You're not authorized to perform this action"})
+
+    } catch (err){
+
+        res.send({
+            status: 400,
+            message: "Token invalid or not provided."
+        })
+
+    }
+
 
 
 })
@@ -37,14 +50,39 @@ router.get('/', (req, res)=>{
 
 router.put('/:bookId', (req, res) =>{
     const bookId = req.params.bookId;
-    bookId && utils.updateBook(bookId, req.body, res);
+
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        
+        utils.checkAdmin(token) ? bookId && utils.updateBook(bookId, req.body, res) :  res.send({status: 401, message: "You're not authorized to perform this action"});
+
+    } catch (error) {
+        res.send({
+            status: 400,
+            message: "Token invalid or not provided."
+        })
+    }
+
+    
 })
 
 // delete book
 
 router.delete('/:bookId', (req, res)=>{
     const bookId = req.params.bookId;
-    bookId && utils.deleteBook(bookId, res);
+
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+
+        utils.checkAdmin(token) ? bookId && utils.deleteBook(bookId, res) : res.send({status: 401, message: "You're not authorized to perform this action"});
+        
+    } catch (error) {
+        res.send({
+            status: 400,
+            message: "Token invalid or not provided."
+        })
+    }
+
 })
 
 
