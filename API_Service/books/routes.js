@@ -17,7 +17,7 @@ router.post('/', (req, res) =>{
         utils.checkAdmin(token) ? utils.addBook(bookData, res) : res.send({status: 401, message: "You're not authorized to perform this action"})
 
     } catch (err){
-
+        console.log(err)
         res.send({
             status: 400,
             message: "Token invalid or not provided."
